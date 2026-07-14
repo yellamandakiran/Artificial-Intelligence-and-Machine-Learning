@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Prediction Result</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+
+    <div class="container">
+
+        <a
+            class="navbar-brand fw-bold"
+            href="/"
+        >
+            Credit Card Approval System
+        </a>
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarMenu"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div
+            class="collapse navbar-collapse"
+            id="navbarMenu"
+        >
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="/"
+                    >
+                        Home
+                    </a>
+
+                </li>
+
+                <li class="nav-item">
+
+                    <a
+                        class="nav-link"
+                        href="/predict"
+                    >
+                        Prediction
+                    </a>
+
+                </li>
+
+            </ul>
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- Result Section -->
+<section class="result-section">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-8">
+
+                <div class="result-card shadow-lg">
+
+                    {% if status == "approved" %}
+
+                    <div class="result-icon approved-icon">
+                        ✓
+                    </div>
+
+                    <h1 class="approved-text">
+                        Application Approved
+                    </h1>
+
+                    <p class="result-message">
+                        The machine learning model predicts that this
+                        applicant has a suitable financial profile for
+                        credit card approval.
+                    </p>
+
+                    {% else %}
+
+                    <div class="result-icon rejected-icon">
+                        ✕
+                    </div>
+
+                    <h1 class="rejected-text">
+                        Application Rejected
+                    </h1>
+
+                    <p class="result-message">
+                        The machine learning model predicts that this
+                        applicant may not currently meet the required
+                        credit approval conditions.
+                    </p>
+
+                    {% endif %}
+
+
+                    <div class="prediction-summary">
+
+                        <h4>
+                            Prediction Summary
+                        </h4>
+
+                        <div class="summary-row">
+
+                            <span>
+                                Prediction
+                            </span>
+
+                            <strong>
+                                {{ prediction }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="summary-row">
+
+                            <span>
+                                Model Used
+                            </span>
+
+                            <strong>
+                                {{ model_name }}
+                            </strong>
+
+                        </div>
+
+
+                        {% if approval_probability is not none %}
+
+                        <div class="summary-row">
+
+                            <span>
+                                Approval Probability
+                            </span>
+
+                            <strong class="text-success">
+                                {{ approval_probability }}%
+                            </strong>
+
+                        </div>
+
+                        {% endif %}
+
+
+                        {% if rejection_probability is not none %}
+
+                        <div class="summary-row">
+
+                            <span>
+                                Rejection Probability
+                            </span>
+
+                            <strong class="text-danger">
+                                {{ rejection_probability }}%
+                            </strong>
+
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if approval_probability is not none %}
+
+                    <div class="probability-section">
+
+                        <h5>
+                            Approval Confidence
+                        </h5>
+
+                        <div
+                            class="progress"
+                            role="progressbar"
+                            aria-label="Approval probability"
+                            aria-valuenow="{{ approval_probability }}"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                        >
+
+                            <div
+                                class="progress-bar bg-success"
+                                style="width: {{ approval_probability }}%;"
+                            >
+                                {{ approval_probability }}%
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    {% if rejection_probability is not none %}
+
+                    <div class="probability-section">
+
+                        <h5>
+                            Rejection Confidence
+                        </h5>
+
+                        <div
+                            class="progress"
+                            role="progressbar"
+                            aria-label="Rejection probability"
+                            aria-valuenow="{{ rejection_probability }}"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                        >
+
+                            <div
+                                class="progress-bar bg-danger"
+                                style="width: {{ rejection_probability }}%;"
+                            >
+                                {{ rejection_probability }}%
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <div class="result-actions">
+
+                        <a
+                            href="/predict"
+                            class="btn btn-primary btn-lg"
+                        >
+                            Make Another Prediction
+                        </a>
+
+                        <a
+                            href="/"
+                            class="btn btn-outline-secondary btn-lg"
+                        >
+                            Return Home
+                        </a>
+
+                    </div>
+
+
+                    <div class="result-notice">
+
+                        <strong>Note:</strong>
+
+                        This prediction is generated using historical
+                        data and machine learning. It is intended only
+                        for educational purposes and is not an official
+                        bank approval decision.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- Footer -->
+<footer class="footer">
+
+    <div class="container text-center">
+
+        <p class="mb-1">
+            Credit Card Approval Prediction System
+        </p>
+
+        <small>
+            Machine Learning and Flask Internship Project
+        </small>
+
+    </div>
+
+</footer>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+></script>
+
+</body>
+
+</html>
